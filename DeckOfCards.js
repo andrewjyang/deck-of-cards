@@ -177,13 +177,11 @@ class DeckOfCards {
             const shuffled = await this.shuffleDeck(deckID);
             const hand = await this.drawCards(deckID, 5);
             this.getBestHand(hand);
-            const cards = this.displayCards();
-            const bestHand = this.displayBestHand();
 
             console.log("created deck  | id:", deckID);
             console.log("shuffled deck | shuffled:", shuffled);
-            console.log(cards);
-            console.log(bestHand);
+            console.log(this.displayCards());
+            console.log(this.displayBestHand());
         } catch(error) {
             console.log("ERROR: There was an issue playing Deck of Cards", error);
         }
