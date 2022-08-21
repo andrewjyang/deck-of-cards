@@ -1,12 +1,6 @@
 const fetch = require('node-fetch');
 const config = require('./config.js');
 
-/*
-TODO:
-- more unit tests
-- handle jokers
- */
-
 class DeckOfCards {
     constructor(cards = [], hand = "") {
         this.cards = cards;
