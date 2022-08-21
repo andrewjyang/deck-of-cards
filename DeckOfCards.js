@@ -184,7 +184,7 @@ module.exports = class DeckOfCards {
 
     /**
      * setCards() sets the cards drawn
-     * @return {Array} cards the cards drawn
+     * @param {Array} cards the cards drawn
      */
     setCards = (cards) => {
         this.cards = cards;
