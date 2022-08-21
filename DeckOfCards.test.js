@@ -21,51 +21,61 @@ describe('Top Scoring Hand', () => {
 
     const straightFlush = getDummyData(dir, 'data.json')['straight-flush'];
     it('should return straight flush', () => {
-        assert.equal(Deck.getTopScoringHand(straightFlush), 'straight flush');
+        Deck.getBestHand(straightFlush);
+        assert.equal(Deck.getHand(), 'straight flush');
     });
 
     const fourOfAKind = getDummyData(dir, 'data.json')['four-of-a-kind'];
     it('should return four of a kind', () => {
-        assert.equal(Deck.getTopScoringHand(fourOfAKind), 'four of a kind');
+        Deck.getBestHand(fourOfAKind);
+        assert.equal(Deck.getHand(), 'four of a kind');
     });
 
     const fullHouse = getDummyData(dir, 'data.json')['full-house'];
     it('should return full house', () => {
-        assert.equal(Deck.getTopScoringHand(fullHouse), 'full house');
+        Deck.getBestHand(fullHouse);
+        assert.equal(Deck.getHand(), 'full house');
     });
 
     const flush = getDummyData(dir, 'data.json')['flush'];
     it('should return flush', () => {
-        assert.equal(Deck.getTopScoringHand(flush), 'flush');
+        Deck.getBestHand(flush);
+        assert.equal(Deck.getHand(), 'flush');
     });
 
     const straight = getDummyData(dir, 'data.json')['straight'];
     it('should return straight', () => {
-        assert.equal(Deck.getTopScoringHand(straight), 'straight');
+        Deck.getBestHand(straight);
+        assert.equal(Deck.getHand(), 'straight');
     });
 
     const wheel = getDummyData(dir, 'data.json')['wheel'];
     it('should return straight (wheel)', () => {
-        assert.equal(Deck.getTopScoringHand(wheel), 'straight');
+        Deck.getBestHand(wheel);
+        assert.equal(Deck.getHand(), 'straight');
     });
 
     const threeOfAKind = getDummyData(dir, 'data.json')['three-of-a-kind'];
     it('should return three of a kind', () => {
-        assert.equal(Deck.getTopScoringHand(threeOfAKind), 'three of a kind');
+        Deck.getBestHand(threeOfAKind);
+        assert.equal(Deck.getHand(), 'three of a kind');
     });
 
     const twoPairs = getDummyData(dir, 'data.json')['two-pairs'];
     it('should return two pairs', () => {
-        assert.equal(Deck.getTopScoringHand(twoPairs), 'two pairs');
+        Deck.getBestHand(twoPairs);
+        assert.equal(Deck.getHand(), 'two pairs');
     });
 
     const pair = getDummyData(dir, 'data.json')['one-pair'];
     it('should return pair', () => {
-        assert.equal(Deck.getTopScoringHand(pair), 'one pair');
+        Deck.getBestHand(pair);
+        assert.equal(Deck.getHand(), 'one pair');
     });
 
     const highCard = getDummyData(dir, 'data.json')['high-card'];
     it('should return high card', () => {
-        assert.equal(Deck.getTopScoringHand(highCard), 'high card');
+        Deck.getBestHand(highCard);
+        assert.equal(Deck.getHand(), 'high card');
     });
 });

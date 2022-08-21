@@ -1,17 +1,18 @@
 const fetch = require('node-fetch');
 const config = require('./config.js');
 
-module.exports = class DeckOfCards {
-    constructor() {
-        this.cards = [];
-        this.score = "";
+class DeckOfCards {
+    constructor(cards = [], hand = "") {
+        this.cards = cards;
+        this.hand = hand;
     }
 
     /**
      * createDeck() creates a standard deck of 52 cards by using the deck of cards api
+     * @return resolved async call with the deck id {String}
      */
     createDeck = async () => {
-        await fetch(config.deck.NEW_DECK_URL)
+        return await fetch(config.deck.NEW_DECK_URL)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -21,9 +22,7 @@ module.exports = class DeckOfCards {
             })
             .then(async (response) => {
                 let deck = response;
-                let deckID = deck['deck_id'].trim();
-                console.log("created deck  | id:", deckID);
-                await this.shuffleDeck(deckID);
+                return deck['deck_id'].trim();
             })
             .catch((error) => {
                 console.log(error);
@@ -33,9 +32,10 @@ module.exports = class DeckOfCards {
     /**
      * shuffleDeck() shuffles the deck of 52 cards by using the deck of cards api
      * @param {String} deckID the deck's id retrieved when creating the deck
+     * @return resolved async call with the deck shuffled {Boolean}
      */
     shuffleDeck = async (deckID) => {
-        await fetch(config.deck.SHUFFLE_DECK_URL.replace(/<<deck_id>>/, deckID))
+        return await fetch(config.deck.SHUFFLE_DECK_URL.replace(/<<deck_id>>/, deckID))
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -45,9 +45,7 @@ module.exports = class DeckOfCards {
             })
             .then((response) => {
                 let deck = response;
-                let shuffled = deck['shuffled'];
-                console.log("shuffled deck | shuffled:", shuffled);
-                this.drawCards(deckID, 5);
+                return deck['shuffled'];
             })
             .catch((error) => {
                 console.log(error);
@@ -58,9 +56,10 @@ module.exports = class DeckOfCards {
      * drawCards() draws cards from the deck of 52 cards by using the deck of cards api
      * @param {String} deckID the deck's id retrieved when creating the deck
      * @param {Number} count the number of cards to be drawn
+     * @return resolved async call with an array of card codes {Array}
      */
     drawCards = async (deckID, count) => {
-        await fetch(config.deck.DRAW_CARD_URL.replace(/<<deck_id>>/, deckID) + count)
+        return await fetch(config.deck.DRAW_CARD_URL.replace(/<<deck_id>>/, deckID) + count)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -70,18 +69,15 @@ module.exports = class DeckOfCards {
             })
             .then((response) => {
                 let cards = response.cards || [];
-                let hand = [];
                 let codes = [];
                 cards.forEach((card, index) => {
-                    let value = card['value'].toLowerCase();
-                    let suit = card['suit'].toLowerCase();
-                    let cardStr = "card " + (index + 1) + " : " + value + " of " + suit;
-                    console.log(cardStr);
-                    hand.push(cardStr);
+                    this.setCards({
+                        value: card['value'].toLowerCase(),
+                        suit: card['suit'].toLowerCase()
+                    });
                     codes.push(card['code']);
                 });
-                this.setCards(hand);
-                this.getTopScoringHand(codes);
+                return codes;
             })
             .catch((error) => {
                 console.log(error);
@@ -105,11 +101,10 @@ module.exports = class DeckOfCards {
     isEqual = (a, b) => a.every((value, index) => value === b[index]);
 
     /**
-     * getTopScoringHand() determines the top-scoring poker hand
+     * getBestHand() determines the top-scoring poker hand
      * @param {Array} hand the Array of Strings of each card's code
-     * @return {String} score the top-scoring poker hand
      */
-    getTopScoringHand = (hand) => {
+    getBestHand = (hand) => {
         let values = [];
         let suits = [];
         const order = {
@@ -139,27 +134,26 @@ module.exports = class DeckOfCards {
         suits = suits.sort();
 
         // hand is a flush if every card is the same suit
-        const flush = suits.every(suit => suits[0] === suit);
+        let flush = suits.every(suit => suits[0] === suit);
 
         // hand is a straight if the index equals every card's value - the first card's value OR if the card values are a wheel (ie. ace to 5)
         const wheel = [14, 2, 3, 4, 5];
-        const straight = values.every((value, index) => value - values[0] === index || this.isEqual(values, wheel.sort(this.ascending)));
+        let straight = values.every((value, index) => value - values[0] === index || this.isEqual(values, wheel.sort(this.ascending)));
 
         // hand is n of a kind if there are n duplicate values
         // note: https://stackoverflow.com/questions/19395257/how-to-count-duplicate-value-in-an-array-in-javascript#answer-19395302
         const counts = {};
         values.forEach(value => counts[value] = (counts[value] || 0) + 1);
-        const ofAKind = (n) => Object.values(counts).includes(n);
+        let ofAKind = (n) => Object.values(counts).includes(n);
 
         // determine the top scoring poker hand
-        const straightFlush = straight && flush;
-        const fourOfAKind = ofAKind(4);
-        const fullHouse = ofAKind(3) && ofAKind(2);
-        const threeOfAKind = ofAKind(3);
-        const twoPair = Object.values(counts).filter(count => count === 2).length === 2;
-        const onePair = ofAKind(2);
-
-        let score = straightFlush ? "straight flush"
+        let straightFlush = straight && flush;
+        let fourOfAKind = ofAKind(4);
+        let fullHouse = ofAKind(3) && ofAKind(2);
+        let threeOfAKind = ofAKind(3);
+        let twoPair = Object.values(counts).filter(count => count === 2).length === 2;
+        let onePair = ofAKind(2);
+        let bestHand = straightFlush ? "straight flush"
             : fourOfAKind ? "four of a kind"
                 : fullHouse ? "full house"
                     : flush ? "flush"
@@ -168,15 +162,36 @@ module.exports = class DeckOfCards {
                                 : twoPair ? "two pairs"
                                     : onePair ? "one pair"
                                         : "high card";
+        this.setHand(bestHand);
+    }
 
-        console.log("top-scoring poker hand:", score);
-        this.setScore(score);
-        return score;
+    /**
+     * play()
+     *  1. creates and shuffles a deck of cards
+     *  2. draws 5 cards from the hand and prints their numbers and suits to the console
+     *  3. identifies the top-scoring poker hand
+     */
+    play = async () => {
+        try {
+            const deckID = await this.createDeck();
+            const shuffled = await this.shuffleDeck(deckID);
+            const hand = await this.drawCards(deckID, 5);
+            this.getBestHand(hand);
+            const cards = this.displayCards();
+            const bestHand = this.displayBestHand();
+
+            console.log("created deck  | id:", deckID);
+            console.log("shuffled deck | shuffled:", shuffled);
+            console.log(cards);
+            console.log(bestHand);
+        } catch(error) {
+            console.log("ERROR: There was an issue playing Deck of Cards", error);
+        }
     }
 
     /**
      * getCards() gets the cards drawn
-     * @return {Array} cards the cards drawn
+     * @return {Object} cards the cards drawn
      */
     getCards = () => {
         return this.cards;
@@ -184,25 +199,47 @@ module.exports = class DeckOfCards {
 
     /**
      * setCards() sets the cards drawn
-     * @param {Array} cards the cards drawn
+     * @param {Object} card the card drawn
      */
-    setCards = (cards) => {
-        this.cards = cards;
+    setCards = (card) => {
+        this.cards.push(card);
     }
 
     /**
-     * getScore() gets the top-scoring poker hand
+     * getHand() gets the top-scoring poker hand
      * @return {String} the top-scoring poker hand
      */
-    getScore = () => {
-        return this.score;
+    getHand = () => {
+        return this.hand;
     }
 
     /**
-     * setScore() sets the top-scoring poker hand
-     * @param {String} score the top-scoring poker hand
+     * setHand() sets the top-scoring poker hand
+     * @param {String} hand the top-scoring poker hand
      */
-    setScore = (score) => {
-        this.score = score;
+    setHand = (hand) => {
+        this.hand = hand;
+    }
+
+    /**
+     * displayCards() displays the cards drawn
+     * @return {String} the cards drawn
+     */
+    displayCards = () => {
+        let drawn = [];
+        this.cards.forEach((card, index) => {
+            drawn.push("card " + (index + 1) + " : " + card['value'] + ' of ' + card['suit']);
+        })
+        return drawn.join("\n");
+    }
+
+    /**
+     * displayBestHand() displays the best hand
+     * @return {String} the top scoring poker hand
+     */
+    displayBestHand = () => {
+        return ("top-scoring poker hand: " + this.hand);
     }
 }
+
+module.exports = DeckOfCards;
