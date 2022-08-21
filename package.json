@@ -1,0 +1,25 @@
+{
+  "name": "deck-of-cards",
+  "version": "1.0.0",
+  "description": "Deck of Cards is an application built using Node.js and makes calls to the Deck of Cards API",
+  "main": "App.js",
+  "scripts": {
+    "start": "node App.js",
+    "test": "mocha test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewjyang/deck-of-cards.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andrewjyang/deck-of-cards/issues"
+  },
+  "homepage": "https://github.com/andrewjyang/deck-of-cards#readme",
+  "dependencies": {
+    "mocha": "^10.0.0",
+    "node-fetch": "^2.6.7"
+  }
+}
