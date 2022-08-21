@@ -1,6 +1,12 @@
 const fetch = require('node-fetch');
 const config = require('./config.js');
 
+/*
+TODO:
+- more unit tests
+- handle jokers
+ */
+
 class DeckOfCards {
     constructor(cards = [], hand = "") {
         this.cards = cards;
@@ -142,7 +148,7 @@ class DeckOfCards {
 
         // hand is n of a kind if there are n duplicate values
         // note: https://stackoverflow.com/questions/19395257/how-to-count-duplicate-value-in-an-array-in-javascript#answer-19395302
-        const counts = {};
+        let counts = {};
         values.forEach(value => counts[value] = (counts[value] || 0) + 1);
         let ofAKind = (n) => Object.values(counts).includes(n);
 
