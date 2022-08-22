@@ -27,6 +27,7 @@ Deck of Cards implements the following tasks:
     note: mock data is stored in `mock >> data.json`
 
 ### Assumptions
+- The program assumes node.js version `16.15.1` and npm version `8.11.0` is installed.
 - The program assumes a standard deck meaning the deck contains a total of 52 cards with 13 ranks and 4 suits in each
   rank.
 - The program assumes a standard deck with the suits: clubs, diamonds, hearts, and spades.
@@ -35,7 +36,6 @@ Deck of Cards implements the following tasks:
 - The program assumes a standard deck that does not include the joker cards (ie. five of a kind is not possible).
 - The program assumes an ace may be used as a low in a straight (ie. ace, 2, 3, 4, 5 is the lowest possible straight
   also called a "wheel").
-- 
 
 ### Author
 
