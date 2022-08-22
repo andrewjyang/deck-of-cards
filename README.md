@@ -24,7 +24,7 @@ Deck of Cards implements the following tasks:
     ```
     npm run test
     ```
-    note: mock data is stored in `mock >> data.json`
+    note: mock data is defined in `mock-data.json`
 
 ### Assumptions
 - The program assumes node.js version `16.15.1` and npm version `8.11.0` is installed.
