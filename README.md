@@ -14,7 +14,7 @@ Deck of Cards implements the following tasks:
 ### Instructions
 1. Install packages and dependencies
     ````
-    npm run install
+    npm install
     ````
 2. Start program
     ````
@@ -35,6 +35,7 @@ Deck of Cards implements the following tasks:
 - The program assumes a standard deck that does not include the joker cards (ie. five of a kind is not possible).
 - The program assumes an ace may be used as a low in a straight (ie. ace, 2, 3, 4, 5 is the lowest possible straight
   also called a "wheel").
+- 
 
 ### Author
 
