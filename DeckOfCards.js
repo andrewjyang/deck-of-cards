@@ -94,11 +94,15 @@ class DeckOfCards {
 
     /**
      * isEqual() determines if two arrays are equal
+     * note: https://masteringjs.io/tutorials/fundamentals/compare-arrays#same-length-each-value-equal
      * @param {Array} a the first array
      * @param {Array} b the second array
      * @return True if the arrays are equal
      */
-    isEqual = (a, b) => a.every((value, index) => value === b[index]);
+    isEqual = (a, b) => Array.isArray(a) &&
+        Array.isArray(b) &&
+        a.length === b.length &&
+        a.every((val, index) => val === b[index]);
 
     /**
      * getBestHand() determines the top-scoring poker hand
@@ -166,7 +170,7 @@ class DeckOfCards {
     }
 
     /**
-     * play()
+     * play() is the driver method for deck of cards
      *  1. creates and shuffles a deck of cards
      *  2. draws 5 cards from the hand and prints their numbers and suits to the console
      *  3. identifies the top-scoring poker hand
